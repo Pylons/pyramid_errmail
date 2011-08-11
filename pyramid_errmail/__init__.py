@@ -19,10 +19,10 @@ _interp_regex = re.compile(r'(?<!\$)(\$(?:(%(n)s)|{(%(n)s)}))'
 
 def errmail_tween_factory(handler, registry):
 
-    sender = registry.settings.get('pyramid_errmail.sender',
+    sender = registry.settings.get('errmail.sender',
                                    'Pyramid <no-reply@example.com>')
-    recipients = registry.settings.get('pyramid_errmail.recipients', '')
-    subject = registry.settings.get('pyramid_errmail.subject',
+    recipients = registry.settings.get('errmail.recipients', '')
+    subject = registry.settings.get('errmail.subject',
                                     '${hostname}: ${exception} (${localtime})')
 
     recipients = [ x.strip() for x in recipients.splitlines() ]
@@ -81,11 +81,11 @@ def includeme(config):
     exceptions (even those eventually caught by a Pyramid exception view,
     which will include exceptions such as ``HTTPFound`` and others
     signifiying redirects) to be mailed.  To turn this feature on, use the
-    ``pyramid_errmail.catchall`` configuration setting with a value of
+    ``errmail.catchall`` configuration setting with a value of
     ``true``.
     """
     config.include('pyramid_mailer')
-    catchall = config.registry.settings.get('pyramid_errmail.catchall','false')
+    catchall = config.registry.settings.get('errmail.catchall','false')
     catchall = asbool(catchall)
     add = partial(config.add_tween, errmail_tween_factory, alias='errmail')
     if catchall:

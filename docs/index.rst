@@ -63,23 +63,23 @@ with only specifying ``mail.host`` and ``mail.port`` in your configuration:
 configuration settings which are meant to be placed in the application
 section of your Pyramid's ``.ini`` file.
 
-``pyramid_errmail.catchall``
+``errmail.catchall``
 
    If this value is ``true``, catch and report all errors, even those that
    might later be caught by a Pyramid exception view.  Otherwise, only
    exceptions that are not caught by a Pyramid exception view are emailed.
 
-``pyramid_errmail.sender``
+``errmail.sender``
 
    The email address of the sender.  If this setting is not set, a default
    sender address will be used.
 
-``pyramid_errmail.recipients``
+``errmail.recipients``
 
     A carriage-return-separated list of recipients for the error emails.  If
     this setting is not set, no email will be sent.
 
-``pyramid_errmail.subject``
+``errmail.subject``
 
     The subject line of each email.  If this setting is not set, the subject
     line will consist of the hostname, the exception title, and the date in

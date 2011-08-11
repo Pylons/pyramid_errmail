@@ -21,12 +21,12 @@ class Test_errmail_tween_factory(unittest.TestCase):
         self.assertEqual(handler, self.handler)
 
     def test_empty_recipients(self):
-        self.registry.settings['pyramid_errmail.recipients'] = ''
+        self.registry.settings['errmail.recipients'] = ''
         handler = self._callFUT()
         self.assertEqual(handler, self.handler)
 
     def test_normal_recipients(self):
-        self.registry.settings['pyramid_errmail.recipients']='chrism@plope.com'
+        self.registry.settings['errmail.recipients']='chrism@plope.com'
         handler = self._callFUT()
         self.assertNotEqual(handler, self.handler)
         
@@ -38,7 +38,7 @@ class Test_errmail_tween(unittest.TestCase):
         self.request = request
         self.config = testing.setUp(request=request)
         self.registry = self.config.registry
-        self.registry.settings['pyramid_errmail.recipients'] = 'chrism'
+        self.registry.settings['errmail.recipients'] = 'chrism'
         request.registry = self.registry
 
     def _setupMailer(self):
@@ -80,7 +80,7 @@ class Test_errmail_tween(unittest.TestCase):
         
     def test_with_sender(self):
         from pyramid_mailer import get_mailer
-        self.registry.settings['pyramid_errmail.sender'] = 'chris'
+        self.registry.settings['errmail.sender'] = 'chris'
         self._setupMailer()
         self.assertRaises(NotImplementedError, self._callFUT)
         mailer = get_mailer(self.request)
@@ -90,7 +90,7 @@ class Test_errmail_tween(unittest.TestCase):
 
     def test_with_custom_subject(self):
         from pyramid_mailer import get_mailer
-        self.registry.settings['pyramid_errmail.subject'] = 'foo ${exception}'
+        self.registry.settings['errmail.subject'] = 'foo ${exception}'
         self._setupMailer()
         self.assertRaises(NotImplementedError, self._callFUT)
         mailer = get_mailer(self.request)
@@ -116,7 +116,7 @@ class Test_includeme(unittest.TestCase):
         from pyramid_errmail import errmail_tween_factory
         from pyramid.tweens import EXCVIEW
         config = DummyConfig()
-        config.settings['pyramid_errmail.catchall'] = 'true'
+        config.settings['errmail.catchall'] = 'true'
         self._callFUT(config)
         self.assertEqual(config.tweens,
                          [(errmail_tween_factory, 'errmail', EXCVIEW, None)])
