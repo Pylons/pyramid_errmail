@@ -7,6 +7,9 @@ Overview
 A package which sends email when an exception occurs in your Pyramid
 application.
 
+.. warning:: This package currently will not work with any released Pyramid;
+   it requires the Pyramid trunk (aka "1.2dev").
+
 Installation
 ------------
 
@@ -30,21 +33,35 @@ Pyramid project's ``__init__.py``:
 Alternately you can use the ``pyramid.includes`` configuration value in your
 ``.ini`` file:
 
-.. code-block:: python
+.. code-block:: ini
    :linenos:
 
+   [app:myapp]
    pyramid.includes = pyramid_errmail
 
 Using
 -----
 
+When this utility is configured into a Pyramid application, whenever it
+catches an exception, an email will be sent to one or more email addresses
+with the traceback associated with that exception.
+
 This package uses the :term:`pyramid_mailer` package to send mail.  It uses
 the mailer settings from that package to determine the SMTP host and port,
-and other mailout-related configuration.  See that package for those
-settings.
+and other mailout-related configuration.  See the documentation for that
+package for detailed settings.  In general, however, you can usually get away
+with only specifying ``mail.host`` and ``mail.port`` in your configuration:
 
-However it has some knobs, in the form of configuration settings (usually in
-the application section of your ``.ini`` file).
+.. code-block:: ini
+   :linenos:
+
+   [app:myapp]
+   mail.host = 25
+   mail.port = localhost
+
+:mod:`pyramid_errmail`` has some of its own knobs, in the form of
+configuration settings which are meant to be placed in the application
+section of your Pyramid's ``.ini`` file.
 
 ``pyramid_errmail.catchall``
 
@@ -65,14 +82,19 @@ the application section of your ``.ini`` file).
 ``pyramid_errmail.subject``
 
     The subject line of each email.  If this setting is not set, the subject
-    line will consist of the exception title.
+    line will consist of the hostname, the exception title, and the date in
+    the format ``${hostname}: ${exception} (${localtime})``.  You can use the
+    following values the subject value: ``${localtime}``, ``${gmtime}``,
+    ``${hostname}``, and ``${exception}``.  They will be replaced with the
+    local time, the Zulu time, the system's hostname, and an exception
+    representation respectively.
 
-Explicit Tween Configuration
-----------------------------
+Explicit "Tween" Configuration
+------------------------------
 
-Note that the error mailer is a Pyramid "tween", and it can be used in the
-explicit tween list if its implicit position in the tween chain is incorrect
-(see the output of ``paster ptweens``)::
+Note that the error mailer is implemented as a Pyramid :term:`tween`, and it
+can be used in the explicit tween list if its implicit position in the tween
+chain is incorrect (see the output of ``paster ptweens``)::
 
    [app:myapp]
    pyramid.tweens = someothertween

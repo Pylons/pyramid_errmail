@@ -64,7 +64,7 @@ class Test_errmail_tween(unittest.TestCase):
         self.assertRaises(ComponentLookupError, self._callFUT)
         
 
-    def test_nosubject(self):
+    def test_default(self):
         from pyramid_mailer import get_mailer
         self._setupMailer()
         self.assertRaises(NotImplementedError, self._callFUT)
@@ -72,8 +72,13 @@ class Test_errmail_tween(unittest.TestCase):
         self.assertEqual(len(mailer.outbox), 1)
         message = mailer.outbox[0]
         self.assertEqual(message.sender, 'Pyramid <no-reply@example.com>')
+        self.assertEqual(message.recipients, ['chrism'])
+        self.assertTrue('Traceback' in message.body)
+        self.assertEqual(message.recipients, ['chrism'])
+        self.assertTrue(': NotImplementedError() (2' in message.subject)
+        self.assertTrue(message.html)
         
-    def test_withsubject(self):
+    def test_with_sender(self):
         from pyramid_mailer import get_mailer
         self.registry.settings['pyramid_errmail.sender'] = 'chris'
         self._setupMailer()
@@ -82,8 +87,16 @@ class Test_errmail_tween(unittest.TestCase):
         self.assertEqual(len(mailer.outbox), 1)
         message = mailer.outbox[0]
         self.assertEqual(message.sender, 'chris')
-        self.assertTrue('Traceback' in message.body)
-        self.assertEqual(message.recipients, ['chrism'])
+
+    def test_with_custom_subject(self):
+        from pyramid_mailer import get_mailer
+        self.registry.settings['pyramid_errmail.subject'] = 'foo ${exception}'
+        self._setupMailer()
+        self.assertRaises(NotImplementedError, self._callFUT)
+        mailer = get_mailer(self.request)
+        self.assertEqual(len(mailer.outbox), 1)
+        message = mailer.outbox[0]
+        self.assertEqual(message.subject, 'foo NotImplementedError()')
 
 class Test_includeme(unittest.TestCase):
     def _callFUT(self, config):
