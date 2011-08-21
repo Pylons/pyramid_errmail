@@ -109,7 +109,7 @@ class Test_includeme(unittest.TestCase):
         config = DummyConfig()
         self._callFUT(config)
         self.assertEqual(config.tweens,
-                         [(errmail_tween_factory, 'errmail', None, EXCVIEW)])
+                         [(errmail_tween_factory, None, EXCVIEW)])
         self.assertEqual(config.included, ['pyramid_mailer'])
 
     def test_it_catchall(self):
@@ -119,7 +119,7 @@ class Test_includeme(unittest.TestCase):
         config.settings['errmail.catchall'] = 'true'
         self._callFUT(config)
         self.assertEqual(config.tweens,
-                         [(errmail_tween_factory, 'errmail', EXCVIEW, None)])
+                         [(errmail_tween_factory, EXCVIEW, None)])
         self.assertEqual(config.included, ['pyramid_mailer'])
         
 
@@ -130,8 +130,8 @@ class DummyConfig(object):
         self.registry = self
         self.settings = {}
 
-    def add_tween(self, factory, alias=None, under=None, over=None):
-        self.tweens.append((factory, alias, under, over))
+    def add_tween(self, factory, under=None, over=None):
+        self.tweens.append((factory, under, over))
 
     def include(self, path):
         self.included.append(path)
