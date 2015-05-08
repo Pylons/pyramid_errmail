@@ -60,7 +60,7 @@ class Test_errmail_tween(unittest.TestCase):
         return tween(request)
 
     def test_nomailer(self):
-        from zope.component.registry import ComponentLookupError
+        from zope.interface.interfaces import ComponentLookupError
         self.assertRaises(ComponentLookupError, self._callFUT)
         
 

@@ -6,6 +6,7 @@
 *.txt.py
 *~
 .coverage
+coverage.xml
 build/
 dist/
 .tox/
